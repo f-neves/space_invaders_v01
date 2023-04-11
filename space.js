@@ -11,8 +11,12 @@ const buttonAttack = document.querySelector(".buttonAttack");
 // canvas.width = 1024
 // canvas.height = 576
 
-canvas.height = 1024;
-canvas.width = 576;
+canvas.height = 600;
+canvas.width = 300;
+
+const scale = .60;
+const invaderWidth = 44;
+const invaderHeight = 32;
 
 class Player {
   constructor() {
@@ -25,12 +29,12 @@ class Player {
     this.opacity = 1;
 
     const image = new Image();
-    image.src = "./img/spaceship.png";
+    image.src = "./img/player.png";
     image.onload = () => {
-      const scale = 0.15;
+      const scaleShip = 1;
       this.image = image;
-      this.width = image.width * scale;
-      this.height = image.height * scale;
+      this.width = image.width * scaleShip;
+      this.height = image.height * scaleShip;
       this.position = {
         x: canvas.width / 2 - this.width / 2,
         y: canvas.height - this.height - 20,
@@ -42,15 +46,15 @@ class Player {
     // c.fillRect(this.position.x, this.position.y, this.width, this.height)
     c.save();
     c.globalAlpha = this.opacity;
-    c.translate(
-      player.position.x + player.width / 2,
-      player.position.y + player.height / 2
-    );
-    c.rotate(this.rotation);
-    c.translate(
-      -player.position.x - player.width / 2,
-      -player.position.y - player.height / 2
-    );
+    // c.translate(
+    //   player.position.x + player.width / 2,
+    //   player.position.y + player.height / 2
+    // );
+    // c.rotate(this.rotation);
+    // c.translate(
+    //   -player.position.x - player.width / 2,
+    //   -player.position.y - player.height / 2
+    // );
     c.drawImage(
       this.image,
       this.position.x,
@@ -75,14 +79,16 @@ class Projectile {
     this.velocity = velocity;
     this.radius = 5;
     this.soundEnabled = soundEnabled;
-    this.shootSound = new Audio("./audio/shoot.wav");
-    this.shootSound.volume = 0.05;
+    this.shootSound = new Audio('audio/laser.wav');
+    this.shootSound.volume = 0.01;
+    this.shootSound.currentTime = 0
+    this.shootSound.play()
   }
 
   draw() {
     c.beginPath();
     c.arc(this.position.x, this.position.y, this.radius, Math.PI, 0);
-    c.fillStyle = "yellow";
+    c.fillStyle = "lightyellow";
     c.fill();
     c.closePath();
   }
@@ -143,28 +149,27 @@ class InvaderProjectile {
 }
 
 class Invader {
-  constructor({ position }) {
+  constructor({ position}) {
     this.velocity = {
       x: 0,
       y: 0,
     };
 
     const image = new Image();
-    image.src = "./img/invader.png";
+    image.src = `img/enemy${1+ Math.floor(Math.random()*3)}.png`;
     image.onload = () => {
-      const scale = 1;
       this.image = image;
       this.width = image.width * scale;
       this.height = image.height * scale;
       this.position = {
         x: position.x,
-        y: position.y,
+        y: position.y
       };
     };
   }
   draw() {
     // c.fillStyle = 'red'
-    // c.fillRect(this.position.x+2, this.position.y+8, 26, 22)
+    // c.fillRect(this.position.x, this.position.y, invaderWidth*scale, invaderHeight*scale)
     c.drawImage(
       this.image,
       this.position.x,
@@ -208,8 +213,8 @@ class Grid {
       y: 0,
     };
     this.invaders = [];
-    const columns = 5 + Math.floor(Math.random() * 5);
-    const rows = 1 + Math.floor(Math.random() * 5);
+    const columns = 3 + Math.floor(Math.random() * 2);
+    const rows = 2 + Math.floor(Math.random() * 5);
     this.width = columns * 35;
 
     for (let i = 0; i < columns; i++) {
@@ -217,8 +222,8 @@ class Grid {
         this.invaders.push(
           new Invader({
             position: {
-              x: i * 35 + 10,
-              y: j * 30,
+              x: i * (invaderWidth + 10) * scale,
+              y: j * (invaderHeight + 5) * scale
             },
           })
         );
@@ -423,7 +428,6 @@ function animate() {
             if (invaderFound && projectileFound) {
               score += 10;
               scoreEl.innerHTML = score;
-              // console.log(score);
               createParticles({
                 object: invader,
                 fades: true,
@@ -475,7 +479,7 @@ animate();
 
 let lastFiredTime = 0;
 const FIRE_DELAY = 200; // tempo em milissegundos entre cada disparo
-const MAX_PROJECTILES = 6; // número máximo de projéteis permitidos na tela ao mesmo tempo
+const MAX_PROJECTILES = 3; // número máximo de projéteis permitidos na tela ao mesmo tempo
 
 function fireProjectile() {
   const now = new Date().getTime();

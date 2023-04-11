@@ -27,18 +27,18 @@ button {
 }
 
 #buttonLeft {
-  margin-top: -90px;
+  margin-top: 30px;
   margin-left: 20px;
 }
 
 #buttonRight {
-  margin-top: -90px;
+  margin-top: 30px;
   margin-left: 120px;
 }
 
 #buttonAttack {
-  margin-top: -90px;
-  margin-left: 480px;
+  margin-top: 30px;
+  margin-left: 300px;
   
 }
 

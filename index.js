@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 
 
 
-canvas.width = 1024;
+canvas.width = 124;
 canvas.height = 576;
 
 class Player {
@@ -15,7 +15,7 @@ class Player {
         this.image = new Image();
         this.image.src = './img/spaceship.png';
         this.image.onload = () => {
-            const scale = 0.15;
+            const scale = 0.1;
             this.width = this.image.width * scale;
             this.height = this.image.height * scale;
             this.position = {
